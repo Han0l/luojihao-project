@@ -1,18 +1,64 @@
-name: CI/CD Pipeline
+name: slack
 
 on:
   push:
     branches:
       - 'release/v[0-9]+\.[0-9]+'
-      #The pipeline should be triggered whenever this is a push to a branch name with the following pattern release/v<digit>.<digit>
+      #1.The pipeline should be triggered whenever this is a push to a branch name with the following pattern release/v<digit>.<digit>
 
 jobs:
-  build:
+  scan:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v2
+
+      
+  
+      #2.Scan the branch and generate report
+      - name: Run Trivy vulnerability scanner in fs mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          exit-code: '1'
+          #severity: ${{ steps.check-severity.outputs.severity }}
+          output: 'trivy-output.txt'
+          #trivy-config: trivy.yaml
+
+  find:
+    runs-on: ubuntu-latest
+      #3.Find vulnerabilities
+    steps:
+      - name: Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.19.0
+        with:
+          image-ref: ''
+          format: 'table'
+          exit-code: '0'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+  
+  slackNotification:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: general
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+          SLACK_ICON: https://github.com/rtCamp.png?size=48
+          SLACK_MESSAGE: 'Post Content :rocket:'
+          SLACK_TITLE: Post Title
+          SLACK_USERNAME: rtCamp
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+    
+
+
+    
         
         
       # Add other steps for your CI/CD pipeline...
