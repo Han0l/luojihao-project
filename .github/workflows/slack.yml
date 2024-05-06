@@ -32,7 +32,7 @@ jobs:
       #2.Scan the branch and generate report
       - name: Run Trivy vulnerability scanner in fs mode
         id: trivy
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.19.0
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -43,10 +43,8 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
 
-  find:
-    runs-on: ubuntu-latest
+  
       #3.Find vulnerabilities
-    steps:
       - name: Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.19.0
         with:
