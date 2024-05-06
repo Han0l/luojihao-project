@@ -1,0 +1,17 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - 'release/v[0-9]+\.[0-9]+'
+      #The pipeline should be triggered whenever this is a push to a branch name with the following pattern release/v<digit>.<digit>
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      # Add other steps for your CI/CD pipeline...
