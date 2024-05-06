@@ -13,21 +13,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.4
+    
+      - name: Scan severity
+        id: check-severity
+        env:
+          Greeting: Hello
+          commitMsg: ${{ github.event.head_commit.message }}
+        run: |
+          if [[ $commitMsg == *"CRITICAL"* ]]; then
+            echo "severity=CRITICAL" >> "$GITHUB_OUTPUT"
+          else
+            echo "severity=HIGH" >> "$GITHUB_OUTPUT"
+          fi
   
 
       
   
       #2.Scan the branch and generate report
       - name: Run Trivy vulnerability scanner in fs mode
+        id: scan
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
           scan-ref: '.'
           format: 'table'
           exit-code: '1'
-          #severity: ${{ steps.check-severity.outputs.severity }}
+          severity: ${{ steps.check-severity.outputs.severity }}
           output: 'trivy-output.txt'
-          #trivy-config: trivy.yaml
 
   find:
     runs-on: ubuntu-latest
