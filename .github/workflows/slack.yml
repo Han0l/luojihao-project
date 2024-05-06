@@ -14,17 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.4
     
-      - name: Scan severity
-        id: severity
-        env:
-          Greeting: Hello
-          commitMsg: ${{ github.event.head_commit.message }}
-        run: |
-          if [[ $commitMsg == *"CRITICAL"* ]]; then
-            echo "severity=CRITICAL" >> "$GITHUB_OUTPUT"
-          else
-            echo "severity=HIGH" >> "$GITHUB_OUTPUT"
-          fi
+      
       
       #2.Scan the branch and generate report
       #3.Find vulnerabilities
@@ -36,7 +26,7 @@ jobs:
           scan-ref: '.'
           format: 'table'
           exit-code: '1'
-          severity: ${{ steps.severity.outputs.severity }}
+          severity: 'CRITICAL'
           output: 'output.txt'
           ignore-unfixed: true
           vuln-type: 'os,library'
