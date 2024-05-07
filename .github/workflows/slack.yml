@@ -34,7 +34,8 @@ jobs:
 
 
       - name: slackNotification
-        if: steps.vulner.outputs.exit-code == '0'
+        if: steps.vulner.outputs.exit-code == '0' 
+        #change to 1 when test finish
         uses: rtCamp/action-slack-notify@v2
         env:
                     #SLACK_CHANNEL: general
@@ -44,6 +45,16 @@ jobs:
                     #SLACK_TITLE: Post Title
                     #SLACK_USERNAME: rtCamp
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: upload
+        if: steps.vulner.outputs.exit-code == '0' 
+        uses: MeilCli/slack-upload-file@v3
+        with:
+            slack_token: ${{ secrets.SLACK_TOKEN }}
+            channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
+            file_path: 'trivy-results.txt'
+            initial_comment: 'Scan report by LuoJihao'
+
     
 
 
