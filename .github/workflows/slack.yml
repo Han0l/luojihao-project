@@ -25,28 +25,29 @@ jobs:
           scan-type: 'fs'
           scan-ref: '.'
           format: 'table'
-          #exit-code: '1'
+          #exit-code: '1' 1 means vulnerabilities are found
           severity: 'CRITICAL'
           output: 'output.txt'
           ignore-unfixed: true
           vuln-type: 'os,library'
 
-  
-      
-  
+
   slackNotification:
+    needs: scan #slackNotification rely on the scan
+    if: ${{ needs.scan.outputs.trivy.outputs.exit-code == '1' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.4
+
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
-          #SLACK_CHANNEL: general
-          #SLACK_COLOR: '#ff00ff' # or a specific color like 'good' or '#ff00ff'
-          #SLACK_ICON: https://github.com/rtCamp.png?size=48
-          #SLACK_MESSAGE: 'Post Content :rocket:'
-          #SLACK_TITLE: Post Title
-          #SLACK_USERNAME: rtCamp
+              #SLACK_CHANNEL: general
+              #SLACK_COLOR: '#ff00ff' # or a specific color like 'good' or '#ff00ff'
+              #SLACK_ICON: https://github.com/rtCamp.png?size=48
+              #SLACK_MESSAGE: 'Post Content :rocket:'
+              #SLACK_TITLE: Post Title
+              #SLACK_USERNAME: rtCamp
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
     
 
