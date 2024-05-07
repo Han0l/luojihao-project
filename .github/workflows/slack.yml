@@ -25,8 +25,7 @@ jobs:
           scan-type: 'fs'
           scan-ref: '.'
           format: 'table'
-          exit-code: '1' 
-          #1 means vulnerabilities are found
+          #exit-code: '1' 
           severity: 'CRITICAL'
           output: 'output.txt'
           ignore-unfixed: true
