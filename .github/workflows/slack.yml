@@ -34,7 +34,7 @@ jobs:
 
 
       - name: slackNotification
-        if: ${{ steps.vulner.outputs.exit-code != '0' }}
+        if: steps.vulner.outputs.exit-code != '0'
         uses: rtCamp/action-slack-notify@v2
         env:
                     #SLACK_CHANNEL: general
