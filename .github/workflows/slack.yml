@@ -19,7 +19,7 @@ jobs:
       #2.Scan the branch and generate report
       #3.Find vulnerabilities
       - name: Run Trivy vulnerability scanner in fs mode
-        id: trivy
+        id: vulner
         uses: aquasecurity/trivy-action@0.19.0
         with:
           scan-type: 'fs'
@@ -31,11 +31,12 @@ jobs:
           output: 'output.txt'
           ignore-unfixed: true
           vuln-type: 'os,library'
+          
 
 
   slackNotification:
     needs: scan #slackNotification rely on the scan
-    if: ${{ needs.scan.outputs.trivy.outputs.exit-code == '1' }}
+    if: ${{ needs.scan.outputs.vulner.outputs.exit-code != '0' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.4
