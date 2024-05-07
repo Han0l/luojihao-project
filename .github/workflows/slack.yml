@@ -1,4 +1,4 @@
-name: Push and Build
+name: Build and Push
 
 on:
   push:
@@ -34,8 +34,8 @@ jobs:
 
 
       - name: slackNotification
-        if: steps.vulner.outputs.exit-code == '0' 
-        #change to 1 when test finish
+        if: steps.vulner.outputs.exit-code != '0' 
+        #change to "==" when test
         uses: rtCamp/action-slack-notify@v2
         env:
                     #SLACK_CHANNEL: general
@@ -46,14 +46,38 @@ jobs:
                     #SLACK_USERNAME: rtCamp
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
+      #3.upload the report produced
       - name: upload
-        if: steps.vulner.outputs.exit-code == '0' 
-        uses: MeilCli/slack-upload-file@v3
+        if: steps.vulner.outputs.exit-code != '0' 
+        uses: MeilCli/slack-upload-file@v4
         with:
             slack_token: ${{ secrets.SLACK_TOKEN }}
             channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
             file_path: 'trivy-results.txt'
             initial_comment: 'Scan report by LuoJihao'
+      
+      #4.if no vulnerabilities
+      - name: Set up QEMU
+        if: steps.vulner.outputs.exit-code == '0' 
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        if: steps.vulner.outputs.exit-code == '0'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        if: steps.vulner.outputs.exit-code == '0'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      #5.building image and push image to Docker Hub account
+      - name: Build and push
+        if: steps.vulner.outputs.exit-code == '0'
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: lokiee00101/go-fortune:latest
 
     
 
