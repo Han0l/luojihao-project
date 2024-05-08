@@ -34,13 +34,13 @@ jobs:
 
       - name: Run Trivy vulnerability scanner in repo mode
         id: vulner
+        continue-on-error: true
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
-          #ignore-unfixed: true
           format: 'table'
           output: 'trivy-results.txt'
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL,HIGH,MEDIUM'
           
       - name: slackNotification
         if: steps.vulner.outputs.exit-code != '0' 
