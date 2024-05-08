@@ -35,7 +35,7 @@ jobs:
       - name: Run Trivy vulnerability scanner in repo mode
         id: vulner
         #continue-on-error: true
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.19.0
         with:
           #image-ref: 'docker.io/lokiee00101/go-fortune:'
           scan-type: 'fs'
@@ -43,7 +43,7 @@ jobs:
           exit-code: '1'
           format: 'table'
           output: 'trivy-results.txt'
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL'
           
       - name: slackNotification
         if: steps.vulner.outputs.exit-code != '0' 
