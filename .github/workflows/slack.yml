@@ -3,11 +3,13 @@ name: Build and Push
 on:
   push:
     branches:
-      - 'release/v[0-9]+\.[0-9]+'
       #1.The pipeline should be triggered whenever this is a push to a branch name with the following pattern release/v<digit>.<digit>
-
+      - 'release/v[0-9]+\.[0-9]+'
+      
 jobs:
   build:
+    #8.if the commit message start with #NORUN the pipeline should not run
+    if: ${{!startsWith(github.event.head_commit.message, '#NORUN')}}
     runs-on: ubuntu-latest
     
     steps:
@@ -106,13 +108,5 @@ jobs:
           SLACK_MESSAGE: "*Name:* Luo Jihao \n *Metriculation:* A0290860B \n *Email:* e.1327891@u.nus.edu \n *Git:* https://github.com/Han0l/luojihao-project \n *Image:* https://hub.docker.com/repository/docker/lokiee00101/go-fortune/general"
           SLACK_TITLE: Image build and signed
           SLACK_USERNAME: CICD
-
-      
-
-    
-
-
-    
-        
-        
+          
       # Add other steps for your CI/CD pipeline...
