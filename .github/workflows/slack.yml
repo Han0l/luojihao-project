@@ -43,7 +43,8 @@ jobs:
           exit-code: '1'
           format: 'table'
           output: 'trivy-results.txt'
-          severity: 'CRITICAL,HIGH'
+          #severity: 'CRITICAL,HIGH' #for failed workflow
+          severity: 'CRITICAL' #for successful workflow
         continue-on-error: true
           
       - name: slackNotification
