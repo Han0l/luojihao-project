@@ -18,26 +18,11 @@ jobs:
     
       #2.Scan the branch and generate report
       #3.Find vulnerabilities
-      #- name: Run Trivy vulnerability scanner in fs mode
-      #  id: vulner
-      #  uses: aquasecurity/trivy-action@0.19.0
-      #  with:
-      #    scan-type: 'fs'
-      #    scan-ref: '.'
-      #    format: 'table'
-          #exit-code: '0' 
-          #severity: 'CRITICAL' #for successful workflow
-      #    severity: 'CRITICAL,HIGH' #for failed workflow
-      #    output: 'trivy-results.txt'
-      #    ignore-unfixed: true
-      #    vuln-type: 'os,library'
-
       - name: Run Trivy vulnerability scanner in repo mode
         id: vulner
         #continue-on-error: true
         uses: aquasecurity/trivy-action@0.19.0
         with:
-          #image-ref: 'docker.io/lokiee00101/go-fortune:'
           scan-type: 'fs'
           scan-ref: '.'
           exit-code: '1'
@@ -51,15 +36,9 @@ jobs:
         if: steps.vulner.outcome == 'failure' 
         uses: rtCamp/action-slack-notify@v2
         env:
-                    #SLACK_CHANNEL: general
-                    #SLACK_COLOR: '#ff00ff' # or a specific color like 'good' or '#ff00ff'
-                    #SLACK_ICON: https://github.com/rtCamp.png?size=48
-                    #SLACK_MESSAGE: 'Post Content :rocket:'
-                    #SLACK_TITLE: Post Title
-                    #SLACK_USERNAME: rtCamp
+          SLACK_ICON: https://github.com/Han0l.png?size=48
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_MESSAGE: 'Scan failed - Luo Jihao'
-          SLACK_ICON: ':cat2:'
 
       #3.upload the report produced
       - name: upload
@@ -124,6 +103,4 @@ jobs:
           SLACK_MESSAGE: "*Name:* Luo Jihao \n *Metriculation:* A0290860B \n *Email:* e.1327891@u.nus.edu \n *Git:* https://github.com/Han0l/luojihao-project \n *Image:* https://hub.docker.com/repository/docker/lokiee00101/go-fortune/general"
           SLACK_TITLE: Image build and signed
           SLACK_USERNAME: CICD
-          SLACK_ICON: ':cat2:'
-          
-      # Add other steps for your CI/CD pipeline...
+          SLACK_ICON: https://github.com/Han0l.png?size=48
