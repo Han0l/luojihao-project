@@ -37,11 +37,12 @@ jobs:
         continue-on-error: true
         uses: aquasecurity/trivy-action@master
         with:
+          image-ref: 'docker.io/lokiee00101/go-fortune:${{ github.sha }}'
           scan-type: 'fs'
           scan-ref: '.'
           format: 'table'
           output: 'trivy-results.txt'
-          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+          severity: 'CRITICAL,HIGH,MEDIUM'
           
       - name: slackNotification
         if: steps.vulner.outputs.exit-code != '0' 
