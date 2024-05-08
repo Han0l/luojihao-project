@@ -87,7 +87,7 @@ jobs:
         env:
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
         run: |
-          cosign sign --yes ${tag}@${DIGEST}
+          cosign sign --yes lokiee00101/go-fortune:latest@${DIGEST}
       
 
     
