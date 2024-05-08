@@ -27,7 +27,7 @@ jobs:
           format: 'table'
           #exit-code: '0' 
           #severity: 'CRITICAL' #for successful workflow
-          severity: 'HIGH,CRITICAL' #for failed workflow
+          severity: 'CRITICAL,HIGH' #for failed workflow
           output: 'trivy-results.txt'
           ignore-unfixed: true
           vuln-type: 'os,library'
