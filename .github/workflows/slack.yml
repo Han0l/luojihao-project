@@ -44,7 +44,7 @@ jobs:
           format: 'table'
           output: 'trivy-results.txt'
           severity: 'CRITICAL,HIGH'
-        #continue-on-error: true
+        continue-on-error: true
           
       - name: slackNotification
         if: steps.vulner.outcome == 'failure' 
