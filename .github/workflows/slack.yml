@@ -103,7 +103,7 @@ jobs:
                     #SLACK_TITLE: Post Title
                     #SLACK_USERNAME: rtCamp
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: '*Name:* Luo Jihao \n *Metriculation:* A0290860B \n *Email:* e.1327891@u.nus.edu \n *Git:* https://github.com/Han0l/luojihao-project \n *Image:* https://hub.docker.com/repository/docker/lokiee00101/go-fortune/general'
+          SLACK_MESSAGE: "*Name:* Luo Jihao \n *Metriculation:* A0290860B \n *Email:* e.1327891@u.nus.edu \n *Git:* https://github.com/Han0l/luojihao-project \n *Image:* https://hub.docker.com/repository/docker/lokiee00101/go-fortune/general"
           SLACK_TITLE: Image build and signed
           SLACK_USERNAME: CICD
 
