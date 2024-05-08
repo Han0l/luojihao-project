@@ -44,11 +44,10 @@ jobs:
           format: 'table'
           output: 'trivy-results.txt'
           severity: 'CRITICAL,HIGH'
-        continue-on-error: true
+        #continue-on-error: true
           
       - name: slackNotification
-        if: steps.vulner.outputs.exit-code != '0' 
-        #change to "==" when test
+        if: steps.vulner.outcome == 'failure' 
         uses: rtCamp/action-slack-notify@v2
         env:
                     #SLACK_CHANNEL: general
@@ -62,7 +61,7 @@ jobs:
 
       #3.upload the report produced
       - name: upload
-        if: steps.vulner.outputs.exit-code != '0' 
+        if: steps.vulner.outcome == 'failure' 
         uses: MeilCli/slack-upload-file@v4
         with:
             slack_token: ${{ secrets.SLACK_TOKEN }}
@@ -72,15 +71,15 @@ jobs:
       
       #4.if no vulnerabilities
       - name: Set up QEMU
-        if: steps.vulner.outputs.exit-code == '0' 
+        if: steps.vulner.outcome == 'success' 
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        if: steps.vulner.outputs.exit-code == '0'
+        if: steps.vulner.outcome == 'success' 
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
-        if: steps.vulner.outputs.exit-code == '0'
+        if: steps.vulner.outcome == 'success' 
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -89,7 +88,7 @@ jobs:
       #5.building image and push image to Docker Hub account
       - name: Build and push
         id: build-and-push
-        if: steps.vulner.outputs.exit-code == '0'
+        if: steps.vulner.outcome == 'success' 
         uses: docker/build-push-action@v5
         with:
           push: true
@@ -97,11 +96,11 @@ jobs:
 
       #6.Digitally sign the image
       - name: cosign-installer
-        if: steps.vulner.outputs.exit-code == '0'
+        if: steps.vulner.outcome == 'success' 
         uses: sigstore/cosign-installer@v3.5.0
 
       - name: Sign the images with GitHub OIDC Token
-        if: steps.vulner.outputs.exit-code == '0'
+        if: steps.vulner.outcome == 'success' 
         env:
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
         run: |
@@ -109,7 +108,7 @@ jobs:
       
       #7.Send a notification to Slack
       - name: slackNotification
-        if: steps.vulner.outputs.exit-code == '0' 
+        if: steps.vulner.outcome == 'success' 
         #change to "==" when test
         uses: rtCamp/action-slack-notify@v2
         env:
