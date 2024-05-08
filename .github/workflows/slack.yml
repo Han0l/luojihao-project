@@ -18,19 +18,29 @@ jobs:
     
       #2.Scan the branch and generate report
       #3.Find vulnerabilities
-      - name: Run Trivy vulnerability scanner in fs mode
-        id: vulner
-        uses: aquasecurity/trivy-action@0.19.0
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'table'
+      #- name: Run Trivy vulnerability scanner in fs mode
+      #  id: vulner
+      #  uses: aquasecurity/trivy-action@0.19.0
+      #  with:
+      #    scan-type: 'fs'
+      #    scan-ref: '.'
+      #    format: 'table'
           #exit-code: '0' 
           #severity: 'CRITICAL' #for successful workflow
-          severity: 'CRITICAL,HIGH' #for failed workflow
+      #    severity: 'CRITICAL,HIGH' #for failed workflow
+      #    output: 'trivy-results.txt'
+      #    ignore-unfixed: true
+      #    vuln-type: 'os,library'
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        id: vulner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          #ignore-unfixed: true
+          format: 'table'
           output: 'trivy-results.txt'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
           
       - name: slackNotification
         if: steps.vulner.outputs.exit-code != '0' 
