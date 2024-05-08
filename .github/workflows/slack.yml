@@ -79,9 +79,11 @@ jobs:
 
       #6.Digitally sign the image
       - name: cosign-installer
+        if: steps.vulner.outputs.exit-code == '0'
         uses: sigstore/cosign-installer@v3.5.0
 
       - name: Sign the images with GitHub OIDC Token
+        if: steps.vulner.outputs.exit-code == '0'
         env:
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
         run: |
