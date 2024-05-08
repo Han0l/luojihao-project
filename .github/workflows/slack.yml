@@ -37,7 +37,7 @@ jobs:
         #continue-on-error: true
         uses: aquasecurity/trivy-action@master
         with:
-          #image-ref: 'docker.io/lokiee00101/go-fortune:${{ github.sha }}'
+          #image-ref: 'docker.io/lokiee00101/go-fortune:'
           scan-type: 'fs'
           scan-ref: '.'
           exit-code: '1'
