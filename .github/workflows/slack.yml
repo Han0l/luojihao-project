@@ -42,7 +42,7 @@ jobs:
           scan-ref: '.'
           format: 'table'
           output: 'trivy-results.txt'
-          severity: 'CRITICAL,HIGH,MEDIUM'
+          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
           
       - name: slackNotification
         if: steps.vulner.outputs.exit-code != '0' 
