@@ -14,8 +14,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.4
     
-      
-      
       #2.Scan the branch and generate report
       #3.Find vulnerabilities
       - name: Run Trivy vulnerability scanner in fs mode
@@ -31,8 +29,6 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           
-
-
       - name: slackNotification
         if: steps.vulner.outputs.exit-code != '0' 
         #change to "==" when test
@@ -71,13 +67,26 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       #5.building image and push image to Docker Hub account
       - name: Build and push
+        id: build-and-push
         if: steps.vulner.outputs.exit-code == '0'
         uses: docker/build-push-action@v5
         with:
           push: true
           tags: lokiee00101/go-fortune:latest
+
+      #6.Digitally sign the image
+      - name: cosign-installer
+        uses: sigstore/cosign-installer@v3.5.0
+
+      - name: Sign the images with GitHub OIDC Token
+        env:
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+        run: |
+          cosign sign --yes ${tag}@${DIGEST}
+      
 
     
 
